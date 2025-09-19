@@ -1,3 +1,5 @@
+"use client";
+
 import { Dispatch, SetStateAction } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import { currencies } from "@/constants/currencies";
