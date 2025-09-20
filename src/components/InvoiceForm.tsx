@@ -6,21 +6,24 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { CurrencySelector } from "./CurrencySelector";
 import { InvoiceLines } from "./InvoiceLines";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { formInputSchema } from "@/schemas/invoice";
+import dayjs from "dayjs";
 
 export interface IFormInput {
   invoice: Invoice;
 }
 export const InvoiceForm = () => {
-
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
   } = useForm<IFormInput>({
+    resolver: yupResolver(formInputSchema),
     defaultValues: {
       invoice: {
         currency: "",
-        date: null,
+        date: dayjs(),
         lines: [
           {
             description: "",
@@ -33,6 +36,9 @@ export const InvoiceForm = () => {
   });
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    const final = {
+      invoice: data,
+    };
     console.log("Form data:", data);
   };
 
@@ -45,10 +51,7 @@ export const InvoiceForm = () => {
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <DatePicker 
-                value={field.value || null} 
-                onChange={field.onChange} 
-              />
+              <DatePicker value={field.value} onChange={field.onChange} />
             )}
           />
           <Controller
@@ -56,14 +59,21 @@ export const InvoiceForm = () => {
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <CurrencySelector 
-                value={field.value || ""} 
-                onChange={field.onChange} 
+              <CurrencySelector
+                value={field.value || ""}
+                onChange={field.onChange}
               />
             )}
           />
           <InvoiceLines control={control} />
-          <Button type="submit">Submit Invoice</Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+            disabled={!isValid || !isDirty}
+          >
+            Submit Invoice
+          </Button>
         </Stack>
       </form>
     </LocalizationProvider>
