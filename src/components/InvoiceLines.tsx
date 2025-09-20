@@ -1,116 +1,109 @@
 "use client";
 
-import { useCallback } from "react";
 import {
   Button,
   IconButton,
+  List,
+  ListItem,
   MenuItem,
   Stack,
   TextField,
-  Typography,
-  Divider,
 } from "@mui/material";
 
-import type { InvoiceLine } from "@/types/types";
 import { currencies } from "@/constants/currencies";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Control, Controller, useFieldArray } from "react-hook-form";
+import { IFormInput } from "./InvoiceForm";
 
 type Props = {
-  invoiceLines: InvoiceLine[];
-  setInvoiceLines: React.Dispatch<React.SetStateAction<InvoiceLine[]>>;
+  control: Control<IFormInput>;
 };
 
-const newLine: InvoiceLine = {
-  description: "",
-  currency: "EUR",
-  amount: 0,
-};
-
-export function InvoiceLines({ invoiceLines, setInvoiceLines }: Props) {
-  const addLine = useCallback(() => {
-    setInvoiceLines((prev) => [...prev, newLine]);
-  }, [setInvoiceLines]);
-
-  const updateLine = useCallback(
-    (idx: number, newValue: Partial<InvoiceLine>) => {
-      setInvoiceLines((prev: InvoiceLine[]) =>
-        prev.map((line, i) => (idx === i ? { ...line, ...newValue } : line))
-      );
-    },
-    [setInvoiceLines]
-  );
-
-  const removeLine = useCallback(
-    (idx: number) => {
-      setInvoiceLines((prev) => prev.filter((_, i) => i !== idx));
-    },
-    [setInvoiceLines]
-  );
+export function InvoiceLines({ control }: Props) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "invoice.lines",
+  });
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <Typography variant="h6">Invoice Lines</Typography>
-        <Divider sx={{ flex: 1 }} />
-        <Button
-          variant="contained"
-          onClick={addLine}
-          size="small"
-          startIcon={<CreateIcon />}
-        >
-          Add Invoice Line
-        </Button>
-      </Stack>
+      <List>
+        {fields.map((item, index) => (
+          <ListItem key={index} sx={{ padding: 0, marginBottom: 2 }}>
+            <Stack
+              width="100%"
+              direction="row"
+              spacing={4}
+              justifyContent="space-between"
+            >
+              <Controller
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Description"
+                    fullWidth
+                    sx={{ width: "60%" }}
+                  />
+                )}
+                name={`invoice.lines.${index}.description`}
+                control={control}
+              />
+              <Controller
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label="Currency"
+                    sx={{ width: "150px" }}
+                  >
+                    {currencies.map((code) => (
+                      <MenuItem key={code} value={code}>
+                        {code}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+                name={`invoice.lines.${index}.currency`}
+                control={control}
+              />
+              <Controller
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Amount"
+                    type="number"
+                    onFocus={(e) => {
+                      if (e.target.value === "0") {
+                        e.target.select();
+                      }
+                    }}
+                  />
+                )}
+                name={`invoice.lines.${index}.amount`}
+                control={control}
+              />
+              <IconButton
+                aria-label="remove"
+                color="error"
+                onClick={() => remove(index)}
+                edge="end"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Stack>
+          </ListItem>
+        ))}
+      </List>
 
-      {invoiceLines.map((line, idx) => (
-        <Stack
-          key={idx}
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          alignItems={{ xs: "stretch", sm: "center" }}
-        >
-          <TextField
-            label="Description"
-            fullWidth
-            value={line.description}
-            onChange={(e) => updateLine(idx, { description: e.target.value })}
-          />
-
-          <TextField
-            select
-            label="Currency"
-            sx={{ minWidth: 140 }}
-            value={line.currency}
-            onChange={(e) => updateLine(idx, { currency: e.target.value })}
-          >
-            {currencies.map((code) => (
-              <MenuItem key={code} value={code}>
-                {code}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
-            label="Amount"
-            type="number"
-            sx={{ minWidth: 160 }}
-            value={line.amount.toString()}
-            onChange={(e) =>
-              updateLine(idx, { amount: Number(e.target.value) })
-            }
-          />
-
-          <IconButton
-            aria-label="remove"
-            color="error"
-            onClick={() => removeLine(idx)}
-            edge="end"
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Stack>
-      ))}
+      <Button
+        variant="contained"
+        onClick={() => append({ description: "", currency: "EUR", amount: 0 })}
+        size="small"
+        startIcon={<CreateIcon />}
+      >
+        Add Invoice Line
+      </Button>
     </Stack>
   );
 }
