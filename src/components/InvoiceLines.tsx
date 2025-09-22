@@ -27,7 +27,7 @@ export function InvoiceLines({ control }: Props) {
   });
 
   return (
-    <Stack spacing={2}>
+    <Stack>
       <List>
         {fields.map((item, index) => (
           <ListItem key={index} sx={{ padding: 0, marginBottom: 2 }}>
@@ -101,6 +101,7 @@ export function InvoiceLines({ control }: Props) {
         onClick={() => append({ description: "", currency: "EUR", amount: 0 })}
         size="small"
         startIcon={<CreateIcon />}
+        sx={{width:'200px'}}
       >
         Add Invoice Line
       </Button>

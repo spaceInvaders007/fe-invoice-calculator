@@ -10,7 +10,7 @@ export const invoiceLineSchema = yup.object({
 const invoiceSchema = yup
   .object({
     currency: yup.string().required("Currency is required"),
-    date: yup.mixed<Dayjs>().required("Date is required"),
+    date: yup.mixed<Dayjs>().required("Date is required").nullable(),
     lines: yup
       .array()
       .of(invoiceLineSchema)

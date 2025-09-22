@@ -2,7 +2,7 @@ import { Dayjs } from "dayjs";
 
 export interface Invoice {
   currency: string;
-  date: Dayjs;
+  date: Dayjs | null;
   lines: InvoiceLine[];
 }
 

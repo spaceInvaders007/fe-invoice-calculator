@@ -8,22 +8,28 @@ import { CurrencySelector } from "./CurrencySelector";
 import { InvoiceLines } from "./InvoiceLines";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formInputSchema } from "@/schemas/invoice";
-import dayjs from "dayjs";
+import { useState } from "react";
 
 export interface IFormInput {
   invoice: Invoice;
 }
 export const InvoiceForm = () => {
+  const [result, setResult] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     handleSubmit,
     control,
     formState: { errors, isValid, isDirty },
+    watch,
   } = useForm<IFormInput>({
     resolver: yupResolver(formInputSchema),
+    mode: "onChange",
     defaultValues: {
       invoice: {
         currency: "",
-        date: dayjs(),
+        date: null,
         lines: [
           {
             description: "",
@@ -35,11 +41,44 @@ export const InvoiceForm = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    const final = {
-      invoice: data,
-    };
-    console.log("Form data:", data);
+  const watchedDate = watch("invoice.date");
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setIsLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const payload = {
+        invoice: {
+          ...data.invoice,
+          date: data.invoice.date!.format("YYYY-MM-DD"),
+        },
+      };
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_QUARKUS_API_URL}/invoice/total`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const responseText = await response.text();
+
+      if (!response.ok) {
+        throw new Error(responseText);
+      }
+
+      setResult(responseText);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -70,9 +109,10 @@ export const InvoiceForm = () => {
             type="submit"
             variant="contained"
             color="success"
-            disabled={!isValid || !isDirty}
+            disabled={!isValid || !isDirty || !watchedDate}
+            sx={{ width: "200px" }}
           >
-            Submit Invoice
+            {isLoading ? "Calculating..." : "Calculate Total"}
           </Button>
         </Stack>
       </form>
