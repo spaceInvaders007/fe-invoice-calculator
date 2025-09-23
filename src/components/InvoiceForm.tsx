@@ -9,6 +9,7 @@ import { InvoiceLines } from "./InvoiceLines";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formInputSchema } from "@/schemas/invoice";
 import { useState } from "react";
+import { InvoiceResults } from "./InvoiceResults";
 
 export interface IFormInput {
   invoice: Invoice;
@@ -41,6 +42,7 @@ export const InvoiceForm = () => {
     },
   });
 
+  const watchedCurrency = watch("invoice.currency");
   const watchedDate = watch("invoice.date");
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -116,6 +118,12 @@ export const InvoiceForm = () => {
           </Button>
         </Stack>
       </form>
+
+      <InvoiceResults
+        total={result}
+        baseCurrency={watchedCurrency || ""}
+        error={error}
+      />
     </LocalizationProvider>
   );
 };
