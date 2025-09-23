@@ -7,7 +7,7 @@ export const invoiceLineSchema = yup.object({
   amount: yup.number().positive().required("Amount is required"),
 });
 
-const invoiceSchema = yup
+export const invoiceSchema = yup
   .object({
     currency: yup.string().required("Currency is required"),
     date: yup.mixed<Dayjs>().required("Date is required").nullable(),
