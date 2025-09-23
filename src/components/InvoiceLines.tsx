@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Box,
   Button,
   IconButton,
   List,
@@ -8,6 +9,7 @@ import {
   MenuItem,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 
 import { currencies } from "@/constants/currencies";
@@ -28,6 +30,9 @@ export function InvoiceLines({ control }: Props) {
 
   return (
     <Stack>
+      <Box>
+        <Typography variant="h5">Invoice Lines</Typography>
+      </Box>
       <List>
         {fields.map((item, index) => (
           <ListItem key={index} sx={{ padding: 0, marginBottom: 2 }}>
@@ -101,7 +106,7 @@ export function InvoiceLines({ control }: Props) {
         onClick={() => append({ description: "", currency: "EUR", amount: 0 })}
         size="small"
         startIcon={<CreateIcon />}
-        sx={{width:'200px'}}
+        sx={{ width: "200px" }}
       >
         Add Invoice Line
       </Button>

@@ -16,7 +16,17 @@ export const CurrencySelector = ({ value, onChange }: Props) => {
       options={currencies}
       getOptionLabel={(option) => String(option)}
       isOptionEqualToValue={(option, value) => option === value}
-      renderInput={(params) => <TextField {...params} label="Currency" />}
+      renderInput={(params) => (
+        <TextField 
+          {...params} 
+          label="Currency" 
+          slotProps={{
+            input: {
+              'aria-label': 'Main Currency'
+            }
+          }}
+        />
+      )}
       onChange={(event, newValue) => onChange(newValue)}
     />
   );

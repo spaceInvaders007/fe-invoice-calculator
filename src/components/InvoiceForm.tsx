@@ -1,6 +1,6 @@
 "use client";
 import { Invoice } from "@/types/types";
-import { Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -85,6 +85,9 @@ export const InvoiceForm = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="h2">Invoice Calculator</Typography>
+      </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
           <Controller
@@ -92,7 +95,19 @@ export const InvoiceForm = () => {
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <DatePicker value={field.value} onChange={field.onChange} />
+              <DatePicker
+                value={field.value}
+                onChange={field.onChange}
+                slotProps={{
+                  textField: {
+                    label: "Invoice Date",
+                    inputProps: {
+                      "aria-label": "Invoice Date",
+                      "data-testid": "date-picker",
+                    },
+                  },
+                }}
+              />
             )}
           />
           <Controller
@@ -111,7 +126,7 @@ export const InvoiceForm = () => {
             type="submit"
             variant="contained"
             color="success"
-            disabled={!isValid || !isDirty || !watchedDate}
+            disabled={!isValid || !watchedDate || isLoading}
             sx={{ width: "200px" }}
           >
             {isLoading ? "Calculating..." : "Calculate Total"}
