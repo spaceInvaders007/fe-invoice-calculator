@@ -7,28 +7,39 @@ import TextField from "@mui/material/TextField";
 interface Props {
   value: string | null;
   onChange: (...event: unknown[]) => void;
+  error?: boolean;
+  helperText?: string;
 }
 
-export const CurrencySelector = ({ value, onChange }: Props) => {
+export const CurrencySelector = ({ 
+  value, 
+  onChange, 
+  error = false,
+  helperText,
+}: Props) => {
   return (
-    <Autocomplete
-      value={value}
-      options={currencies}
-      getOptionLabel={(option) => String(option)}
-      isOptionEqualToValue={(option, value) => option === value}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Currency"
-          slotProps={{
-            htmlInput: {
-              ...params.inputProps,
-              "data-testid": "currency-selector",
-            },
-          }}
-        />
-      )}
-      onChange={(event, newValue) => onChange(newValue)}
-    />
+    <>
+      <Autocomplete
+        value={value}
+        options={currencies}
+        getOptionLabel={(option) => String(option)}
+        isOptionEqualToValue={(option, value) => option === value}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Base Currency *"
+            error={error}
+            helperText={helperText}
+            slotProps={{
+              htmlInput: {
+                ...params.inputProps,
+                "data-testid": "currency-selector",
+              },
+            }}
+          />
+        )}
+        onChange={(event, newValue) => onChange(newValue)}
+      />
+    </>
   );
 };

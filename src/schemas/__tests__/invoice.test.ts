@@ -38,7 +38,7 @@ describe('Invoice Schemas', () => {
         amount: -10,
       };
 
-      await expect(invoiceLineSchema.validate(invalidLine)).rejects.toThrow('amount must be a positive number');
+      await expect(invoiceLineSchema.validate(invalidLine)).rejects.toThrow('Amount must be at least 0.01');
     });
 
     it('should reject zero amount', async () => {
@@ -48,7 +48,7 @@ describe('Invoice Schemas', () => {
         amount: 0,
       };
 
-      await expect(invoiceLineSchema.validate(invalidLine)).rejects.toThrow('amount must be a positive number');
+      await expect(invoiceLineSchema.validate(invalidLine)).rejects.toThrow('Amount must be at least 0.01');
     });
 
     it('should reject non-numeric amount', async () => {
@@ -58,7 +58,7 @@ describe('Invoice Schemas', () => {
         amount: 'not a number',
       };
 
-      await expect(invoiceLineSchema.validate(invalidLine)).rejects.toThrow('amount must be a `number` type');
+      await expect(invoiceLineSchema.validate(invalidLine)).rejects.toThrow('Amount must be a valid number');
     });
   });
 
@@ -90,7 +90,7 @@ describe('Invoice Schemas', () => {
         lines: [{ description: 'Test', currency: 'USD', amount: 100 }],
       };
 
-      await expect(invoiceSchema.validate(invalidInvoice)).rejects.toThrow('Currency is required');
+      await expect(invoiceSchema.validate(invalidInvoice)).rejects.toThrow('Base currency is required');
     });
 
     it('should reject missing date', async () => {
@@ -99,7 +99,7 @@ describe('Invoice Schemas', () => {
         lines: [{ description: 'Test', currency: 'USD', amount: 100 }],
       };
 
-      await expect(invoiceSchema.validate(invalidInvoice)).rejects.toThrow('Date is required');
+      await expect(invoiceSchema.validate(invalidInvoice)).rejects.toThrow('Invoice date is required');
     });
 
     it('should reject empty lines array', async () => {
