@@ -74,7 +74,7 @@ describe("InvoiceForm Integration", () => {
     const dateInput = screen.getByTestId("date-picker");
     await user.type(dateInput, "01/01/2024");
 
-    const currencyInput = screen.getByLabelText("Main Currency");
+    const currencyInput = screen.getByTestId("currency-selector");
     await user.type(currencyInput, "USD");
 
     const descriptionInput = screen.getByLabelText("Description");
@@ -123,7 +123,7 @@ describe("InvoiceForm Integration", () => {
     const dateInput = screen.getByTestId("date-picker");
     await user.type(dateInput, "01/01/2024");
 
-    const currencyInput = screen.getByLabelText("Main Currency");
+    const currencyInput = screen.getByTestId("currency-selector");
     await user.type(currencyInput, "USD");
 
     const descriptionInput = screen.getByLabelText("Description");
@@ -176,7 +176,7 @@ describe("InvoiceForm Integration", () => {
     const dateInput = screen.getByTestId("date-picker");
     await user.type(dateInput, "01/01/2024");
 
-    const currencyInput = screen.getByLabelText("Main Currency");
+    const currencyInput = screen.getByTestId("currency-selector");
     await user.type(currencyInput, "USD");
 
     const descriptionInput = screen.getByLabelText("Description");
