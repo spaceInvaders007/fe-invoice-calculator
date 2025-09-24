@@ -11,3 +11,7 @@ export interface InvoiceLine {
   amount: number;
   currency: string;
 }
+
+export interface IFormInput {
+  invoice: Invoice;
+}

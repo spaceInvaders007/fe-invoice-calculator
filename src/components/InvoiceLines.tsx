@@ -20,7 +20,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { Control, Controller, useFieldArray, FieldErrors } from "react-hook-form";
-import { IFormInput } from "./InvoiceForm";
+import { IFormInput } from "@/types/types";
 
 type Props = {
   control: Control<IFormInput>;
